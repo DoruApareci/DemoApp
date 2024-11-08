@@ -1,0 +1,94 @@
+﻿@page "/admin/dorms/new"
+@inject IDormService DormService
+@rendermode InteractiveAuto
+@using System
+@using DemoApp.Services.Interfaces
+@using DemoApp.Shared.Models
+@using Microsoft.AspNetCore.Authorization
+
+
+<h3>Register Dorm</h3>
+
+<div class="container">
+    <div class="card my-4">
+        <div class="card-body">
+            <form @onsubmit="RegisterDorm">
+                <div class="form-group">
+                    <label for="dormName">Dorm Name</label>
+                    <input type="text" id="dormName" class="form-control" @bind="Dorm.Name" required />
+                </div>
+                <div class="form-group">
+                    <label for="dormAddress">Address</label>
+                    <input type="text" id="dormAddress" class="form-control" @bind="Dorm.Address" required />
+                </div>
+                <div class="form-group">
+                    <label for="floors">Floors</label>
+                    <input type="number" id="floors" class="form-control" @bind="Dorm.Floors" min="1" required />
+                </div>
+                <button type="submit" class="btn btn-primary">Register Dorm</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card my-4">
+        <div class="card-body">
+            <h5>Add Rooms</h5>
+            <form @onsubmit="AddRoomToDorm">
+                <div class="form-group">
+                    <label for="roomNumber">Room Number</label>
+                    <input type="text" id="roomNumber" class="form-control" @bind="NewRoom.RoomNumber" required />
+                </div>
+                <div class="form-group">
+                    <label for="roomFloor">Floor</label>
+                    <input type="number" id="roomFloor" class="form-control" @bind="NewRoom.Floor" min="1" required />
+                </div>
+                <div class="form-group">
+                    <label for="beds">Beds</label>
+                    <input type="number" id="beds" class="form-control" @bind="NewRoom.Beds" min="1" required />
+                </div>
+                <button type="submit" class="btn btn-secondary">Add Room</button>
+            </form>
+            @if (Dorm.Rooms.Count() != 0)
+            {
+                <div class="mt-4">
+                    <h6>Rooms Added:</h6>
+                    <ul class="list-group">
+                        @foreach (var room in Dorm.Rooms)
+                        {
+                            <li class="list-group-item">
+                                Room @room.RoomNumber, Floor: @room.Floor, Beds: @room.Beds
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private Dorm Dorm = new () { Rooms = new List<Room>() };
+    private Room NewRoom = new Room();
+
+    private async Task RegisterDorm()
+    {
+        await DormService.CreateDormAsync(Dorm);
+        Console.WriteLine("DormCreated");
+        Dorm = new Dorm { Rooms = new List<Room>() };
+    }
+
+    private void AddRoomToDorm()
+    {
+        NewRoom.RoomId = Guid.NewGuid();
+        NewRoom.DormId = Dorm.DormId;
+        Dorm.Rooms.Add(new Room
+        {
+            RoomId = NewRoom.RoomId,
+            RoomNumber = NewRoom.RoomNumber,
+            Floor = NewRoom.Floor,
+            Beds = NewRoom.Beds
+        });
+
+        NewRoom = new Room();
+    }
+}

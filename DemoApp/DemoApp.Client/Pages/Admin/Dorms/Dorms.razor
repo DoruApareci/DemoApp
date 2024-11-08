@@ -1,0 +1,72 @@
+﻿@page "/admin/dorms/"
+@using DemoApp.Services.Interfaces
+@using DemoApp.Shared.Models
+
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = DemoApp.Shared.Constants.UserRoles.Admin)]
+
+@rendermode InteractiveAuto
+
+@inject IDormService DormService
+@inject IRoomService RoomService
+
+
+<div class="form-group">
+    <label for="dormSelect">Cămin</label>
+    @* <select id="dormSelect" class="form-control" @onchange="OnDormChanged">
+        <option value="">Selectează un cămin</option>
+        @foreach (var dorm in AvailableDorms)
+        {
+            <option value="@dorm.DormId">@dorm.Name</option>
+        }
+    </select> *@
+</div>
+
+@if (SelectedDorm != null)
+{
+    <h4>@SelectedDorm.Name</h4>
+    <p>@SelectedDorm.Address, @SelectedDorm.Floors etaje</p>
+
+    <div class="card-deck mt-3">
+        @foreach (var room in Rooms)
+        {
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Camera @room.RoomNumber</h5>
+                    <p class="card-text">Etaj: @room.Floor</p>
+                    <p class="card-text">Paturi: @room.Beds</p>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p>Selectează un cămin pentru a vedea camerele disponibile.</p>
+}
+
+@code {
+    private List<Dorm> AvailableDorms = new List<Dorm>();
+    private Dorm? SelectedDorm;
+    private List<Room> Rooms = new List<Room>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        AvailableDorms = (await DormService.GetAllDormsAsync()).ToList();
+    }
+
+    // private async Task OnDormChanged(ChangeEventArgs e)
+    // {
+    //     var dormId = e.Value?.ToString();
+    //     if (Guid.TryParse(dormId, out var parsedDormId))
+    //     {
+    //         SelectedDorm = AvailableDorms.FirstOrDefault(d => d.DormId == parsedDormId);
+    //         Rooms = (await RoomService.GetRoomsByDormAsync(parsedDormId)).ToList();
+    //     }
+    //     else
+    //     {
+    //         SelectedDorm = null;
+    //         Rooms.Clear();
+    //     }
+    // }
+}

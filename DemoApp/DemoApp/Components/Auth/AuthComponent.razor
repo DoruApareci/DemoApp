@@ -1,0 +1,97 @@
+﻿@page "/auth"
+
+@using Syncfusion.Blazor.Navigations
+
+@rendermode InteractiveServer
+
+<div class="auth-container">
+    <SfTab Width="500px" CssClass="custom-tab">
+        <TabItems>
+            <TabItem>
+                <ChildContent>
+                    <TabHeader Text="Login"></TabHeader>
+                </ChildContent>
+                <ContentTemplate>
+                    @(new RenderFragment(builder =>
+                        {
+                            builder.OpenComponent<DemoApp.Components.Account.Pages.Login> (0);
+                            builder.AddAttribute(1, "RenderMode", RenderMode.InteractiveServer);
+                            builder.CloseComponent();
+                        }))
+                </ContentTemplate>
+            </TabItem>
+            <TabItem>
+                <ChildContent>
+                    <TabHeader Text="Register"></TabHeader>
+                </ChildContent>
+                <ContentTemplate>
+                    <DemoApp.Components.Account.Pages.Register></DemoApp.Components.Account.Pages.Register>
+                </ContentTemplate>
+            </TabItem>
+        </TabItems>
+    </SfTab>
+</div>
+
+<style>
+    .auth-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+
+    .custom-tab .e-tab {
+        border: 2px solid #accaf2;
+    }
+
+    .custom-tab .e-tab-header .e-toolbar-items {
+        background-color: white;
+        border-bottom: 2px solid #accaf2;
+        display: flex;
+        justify-content: center;
+    }
+
+    .custom-tab .e-tab-header .e-toolbar-item .e-tab-text {
+        padding: 10px;
+        font-size: 1.7rem;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .custom-tab .e-tab-header .e-toolbar-item.e-active {
+        background-color: #7a9fdc;
+        color: white !important;
+    }
+
+        .custom-tab .e-tab-header .e-toolbar-item.e-active .e-tab-text,
+        .custom-tab .e-tab-header .e-toolbar-item.e-active .e-tab-icon {
+            color: white !important;
+        }
+
+    .custom-tab .e-tab-header .e-toolbar-item .e-tab-wrap:hover {
+        background-color: #91b6e8 !important;
+    }
+
+    .custom-tab .e-content {
+        background-color: #eef3fa !important;
+        padding: 20px;
+        border: 1px solid #accaf2;
+        opacity: 0;
+        animation: fadeIn 0.4s ease forwards;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+@code {
+}
